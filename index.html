@@ -2207,8 +2207,6 @@ const BADGES = [
   ["exam1","🎓","Examiner's eye","Finish an Exam Skills round",()=>G.st.examRounds>=1],
   ["exam10","📝","Full-mark technique","Score 10/10 in Exam Skills",()=>G.st.exam>=10],
   ["exam25","🧑‍🏫","Chief examiner","Finish 25 Exam Skills rounds",()=>G.st.examRounds>=25],
-  ["stats1","🧮","Number cruncher","Finish a Data Skills round",()=>G.st.statsRounds>=1],
-  ["stats10","📊","Data whizz","Score 10/10 in Data Skills",()=>G.st.stats>=10],
   ["gap20","✏️","Word perfect","Get 20 right in one Gap Fill",()=>G.st.gapR>=20],
   ["weak25","🎯","Weak spot fixer","Answer 25 cards in Fix my weak spots",()=>(G.st.weakDone||0)>=25],
   ["essay1","✍️","First draft","Self-mark an essay in Writing",()=>(G.st.essays||0)>=1],
@@ -2540,8 +2538,6 @@ function qExam(rng){ const o=examQ(rng); return {...o, tname:"Exam skills · "+o
 const MODES = {
   exam:{icon:"🎓", name:"Exam Skills", c:ES_C, kind:"round", n:10, boost:2, featured:true, src:"exam",
         desc:"Command words, essay structure, mark bands, timings, Apply it scenarios, spotting AO1/AO2/AO3 and picking the best evaluation point. 10 questions with feedback. Double XP every time."},
-  stats:{icon:"🧮", name:"Data Skills", c:ST_C, kind:"round", n:10, src:"stats",
-        desc:"Read data like an Item: percentages, trends, averages and ratios, plus spotting types of data, sampling methods and research issues. Worked answers after each one."},
   gap:{icon:"✏️", name:"Gap Fill", c:"#D98E0F", kind:"blitz", src:"gap",
         desc:"Fill the gap with the right key term. 60 seconds, wrong answers cost 3 seconds. Uses the topics you've selected."},
   blitz:{icon:"⚡", name:"Blitz", c:"#E0533D", kind:"blitz", src:"cards", desc:"60 seconds. Answer as many as you can. Wrong answers cost 3 seconds. Combos multiply your score."},
@@ -2565,14 +2561,14 @@ const MODES = {
   weekly:{icon:"🏁", name:"Weekly Challenge", c:"#C2410C", kind:"weekly", n:15, src:"weekly", desc:"This week's topic, the same 15 questions for everyone in the class. One scored go per week, so make it count."},
   parent:{icon:"👪", name:"Parent Mode", c:"#1C8A5E", kind:"parent", src:"parent", desc:"For parents and carers: quiz your young person with the answers in front of you. No sociology knowledge needed."},
   proj:{icon:"📽️", name:"Projector Mode", c:"#18203A", kind:"proj", src:"proj", desc:"For teachers: a team quiz for the board, with a timer, scoreboard and podium. Doesn't affect anyone's XP."},
-  daily:{icon:"📰", name:"Daily 10", c:"#1C8A5E", kind:"daily", src:"daily", desc:"The same 10 questions for everyone today, including exam skills and a data skills question. One go. Compare with your class."},
+  daily:{icon:"📰", name:"Daily 10", c:"#1C8A5E", kind:"daily", src:"daily", desc:"The same 10 questions for everyone today, including exam skills questions. One go. Compare with your class."},
 };
 const arc={phase:"menu", mode:null, qs:[], i:0, score:0, right:0, lives:3, end:0, qEnd:0, timer:null, cur:null, locked:false, log:[], t0:0, xp:0, best:false, seen:new Set(), fb:false};
 const dailyNo = () => dayNum(today())-dayNum("2026-01-01")+1;
 const M = () => MODES[arc.mode];
 /* how the arcade menu is grouped on phones (desktop shows one grid in the MODES order) */
-const ARC_GROUPS=[["📰","Daily and weekly",["daily","psychle","weekly","exam"]],["⚡","Quick play",["tf","blitz","surv","gap","connections","hilo","match","sort","timeline","order"]],["🕵️","Study skills",["stats","flaw","detective","whoami","truths","mistakes"]],["✍️","Exam technique",["paragraph","examiner"]],["👹","Challenges",["boss"]],["👪","For teachers and parents",["parent","proj"]]];
-const GOTD_POOL=["blitz","surv","gap","stats","flaw","match","order","detective","whoami","sort","timeline","tf","hilo","truths","connections","paragraph","examiner"];
+const ARC_GROUPS=[["📰","Daily and weekly",["daily","psychle","weekly","exam"]],["⚡","Quick play",["tf","blitz","surv","gap","connections","hilo","match","sort","timeline","order"]],["🕵️","Study skills",["flaw","detective","whoami","truths","mistakes"]],["✍️","Exam technique",["paragraph","examiner"]],["👹","Challenges",["boss"]],["👪","For teachers and parents",["parent","proj"]]];
+const GOTD_POOL=["blitz","surv","gap","flaw","match","order","detective","whoami","sort","timeline","tf","hilo","truths","connections","paragraph","examiner"];
 const gotd=()=>GOTD_POOL[((dayNum(today())%GOTD_POOL.length)+GOTD_POOL.length)%GOTD_POOL.length];
 /* weekly challenge: rotates through the content topics every Monday */
 const WEEK_TOPICS=TOPICS.filter(t=>t.key!=="Exam skills");
@@ -2629,7 +2625,7 @@ function renderArcade(){
         const nOpen=TOPICS.filter(t=>t.key!=="Exam skills"&&topicOpen(t.key)).length, yr=isTeacher()?`<p class="yearnote">🧑‍🏫 <b>Teacher mode:</b> every topic is in the games, and hard-mode bosses are open. <button class="linkbtn" id="yearChange">Change</button></p>`:(store.year&&!DEMO&&nOpen<TOPICS.length-1)?`<p class="yearnote">📅 <b>Year ${store.year} mode:</b> games use the topics you've been taught so far (${nOpen} of ${TOPICS.length-1}). More unlock as the year goes on. <button class="linkbtn" id="yearChange">Change year</button></p>`:"";
         return yr+`<div class="modes modes-flat">${Object.keys(MODES).map(card).join("")}</div>
         <div class="modes-grouped">${groups.map((g,i)=>`<details class="mgroup" ${i<2||g[2].includes(gotd())?"open":""}><summary><span>${g[0]}</span>${g[1]}<small>${g[2].length}</small></summary><div class="modes">${g[2].map(card).join("")}</div></details>`).join("")}</div>`; })()}
-      <p class="arc-note">Blitz, Survival and Gap Fill use the topics you've selected above${nCards?"":", so pick at least one"}. Exam Skills and Data Skills cover the whole course. Wrong answers on revision cards are added to your still-learning pile. Use keys 1 to 4 to answer, and Enter for the next question.</p>`;
+      <p class="arc-note">Blitz, Survival and Gap Fill use the topics you've selected above${nCards?"":", so pick at least one"}. Exam Skills covers the whole course. Wrong answers on revision cards are added to your still-learning pile. Use keys 1 to 4 to answer, and Enter for the next question.</p>`;
     $("#weekBan").onclick=()=>startArc("weekly");
     const yc=$("#yearChange"); if(yc) yc.onclick=()=>showYearPicker(true);
     $("#gotdBan").onclick=()=>{ const g=gotd(); if(g==="match") startMatch(); else if(g==="order") startOrder(); else if(g==="sort") startSort(); else if(g==="timeline") startTimeline(); else if(g==="connections") startConnections(); else if(g==="paragraph") startParagraph(); else startArc(g); };
@@ -2702,7 +2698,7 @@ function untilMidnight(){ const n=new Date(), m=new Date(n); m.setHours(24,0,0,0
 function shareText(){ const dd=G.daily[today()]; return `Fount of Wisdom A-level Daily 10 #${dailyNo()}\n${dd.score}/10 · ${fmtTime(dd.time)}\n${dd.log.map(x=>x?"🟩":"🟥").join("")}`; }
 function dailyQs(){
   const rng=rngFrom("daily-"+today()), cards=shuffleR(DATA.filter(d=>mcOK(d)&&d.t!=="Exam skills"&&topicOpen(d.t)),rng).slice(0,7);
-  const qs=cards.map(d=>qFromCard(d,rng)); qs.splice(2,0,qExam(rng)); qs.splice(5,0,qStats(rng)); qs.splice(8,0,qExam(rng));
+  const qs=cards.map(d=>qFromCard(d,rng)); qs.splice(2,0,qExam(rng)); qs.splice(5,0,qExam(rng)); qs.splice(8,0,qExam(rng));
   return qs;
 }
 function bossQs(key){
@@ -4312,7 +4308,6 @@ function buildMock(p){
     const sa=cards.find((d,i)=>i>=2 && d.a.length>=40 && d.a.length<=220);
     if(sa) items.push({type:"short", t:k, ao:1, marks:2, q:sa.q, model:sa.a, id:sa.id});
     const ap=APPLY.filter(a=>a[0]===k); if(ap.length){ const a=ap[Math.floor(rng()*ap.length)]; const o=shuffleR([a[2],...a[3]],rng); items.push({type:"mc", t:k, ao:2, marks:1, q:"Apply it: "+a[1]+" Which concept does this best show?", opts:o, correct:o.indexOf(a[2]), explain:a[4]}); }
-    if(k==="RM") for(let i=0;i<3;i++){ const s=statsQ(rng); items.push({type:"mc", t:k, ao:2, marks:1, q:s.q, opts:s.opts, correct:s.correct, explain:s.explain}); }
   });
   const es=ESSAY_BANK.map((e,i)=>({...e,id:"e"+i})).filter(e=>e.m===10 && P.t.includes(e.t)); const e=es[Math.floor(rng()*es.length)];
   if(e) items.push({type:"essay", t:e.t, marks:8, essay:e});
@@ -4321,7 +4316,7 @@ function buildMock(p){
 function renderMock(area,seg){
   const total=mk.items.reduce((a,x)=>a+x.marks,0);
   if(mk.phase==="pick"){
-    area.innerHTML=`${seg}<div class="empty" style="text-align:left"><h3 style="text-align:center">📝 Mini mock paper</h3><p style="text-align:center">A short timed paper in the style of the real exam: multiple choice, short answers, Apply it, data skills and a 10-mark question. About 25–30 marks and 35 minutes. Multiple choice marks itself; you self-mark the rest against model answers.</p>
+    area.innerHTML=`${seg}<div class="empty" style="text-align:left"><h3 style="text-align:center">📝 Mini mock paper</h3><p style="text-align:center">A short timed paper in the style of the real exam: multiple choice, short answers, Apply it and a 10-mark question. About 25–30 marks and 35 minutes. Multiple choice marks itself; you self-mark the rest against model answers.</p>
       <div class="designs">${Object.entries(PAPERS).filter(([k])=>!(store.year==="12" && k==="3")).map(([k,P])=>`<button class="dcard" data-p="${k}"><b>${P.name}: ${esc(P.sub)}</b><span>${P.t.map(x=>TMAP[x].name).join(" · ")}</span>${(G.mocks||[]).filter(m=>m[0]==+k).length?`<small>Best: ${Math.max(...G.mocks.filter(m=>m[0]==+k).map(m=>Math.round(m[1]/m[2]*100)))}%</small>`:""}</button>`).join("")}</div></div>`;
     area.querySelectorAll("[data-wm]").forEach(b=>b.onclick=()=>{ wr.mode=b.dataset.wm; renderWriting(); });
     area.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ mk.paper=+b.dataset.p; track("Mock paper started","Paper "+mk.paper); mk.items=buildMock(mk.paper); mk.phase="sit"; const mins=Math.round(mk.items.reduce((a,x)=>a+x.marks,0)*1.25); mk.end=Date.now()+mins*60000; clearInterval(mk.timer); mk.timer=setInterval(()=>{ const c=$("#mkClock"); if(!c){ return; } const l=mk.end-Date.now(); c.textContent=l>0?fmtTime(l):"Time's up"; if(l<=0){ clearInterval(mk.timer); toast("⏱","Time's up","Finish your sentence, then submit."); } },500); renderWriting(); });
@@ -4601,7 +4596,6 @@ function renderTrophies(){
       <div class="tile"><b>${G.st.blitz.toLocaleString()}</b><span>Blitz best</span></div>
       <div class="tile"><b>${G.st.surv}</b><span>Survival best</span></div>
       <div class="tile"><b>🎓 ${G.st.exam}/10</b><span>Exam Skills best (${G.st.examRounds} rounds)</span></div>
-      <div class="tile"><b>🧮 ${G.st.stats}/10</b><span>Data Skills best (${G.st.statsRounds} rounds)</span></div>
       <div class="tile"><b>${G.st.gap.toLocaleString()}</b><span>Gap Fill best</span></div>
       <div class="tile"><b>🔎 ${G.st.flawBest||0}/8</b><span>Spot the Flaw best</span></div>
       <div class="tile"><b>🔗 ${G.st.matchBest||0}/15</b><span>Study Matcher best</span></div>

@@ -152,8 +152,8 @@ function flagsBox(){ const L=flagList(); if(!L.length) return `<div class="box">
 function wireFlags(){ const b=document.getElementById("flagCopy"); if(!b) return; b.onclick=async()=>{ const t=document.getElementById("flagTxt"); try{ await navigator.clipboard.writeText(t.value); document.getElementById("flagMsg").textContent="Copied ✓"; }catch(e){ t.select(); document.getElementById("flagMsg").textContent="Selected: press Ctrl+C to copy."; } }; }
 $("#go").onclick=run;
 $("#csv").onclick=()=>{
-  const head=["Student","Year","Level","XP","Cards known","Accuracy %","Streak","Best streak","Days active (14)","Essays","Bosses beaten","Exam Skills best","Stats Lab best","Mastery stars","Report date",...TOPICS.map(t=>t[0]+" % known"),...TOPICS.map(t=>t[0]+" stars")];
-  const lines=[head,...rows.map(r=>[r.name,r.year,lvlFor(r.xp),r.xp,r.known,r.acc,r.streak,r.best,r.active,r.essays,r.bosses,r.exam,r.stats,r.stars,dayToDate(r.day).toLocaleDateString("en-GB"),...TOPICS.map((_,i)=>r.topics[i]?r.topics[i][0]:""),...TOPICS.map((_,i)=>r.topics[i]&&r.topics[i][3]!=null?r.topics[i][3]:"")])];
+  const head=["Student","Year","Level","XP","Cards known","Accuracy %","Streak","Best streak","Days active (14)","Essays","Bosses beaten","Exam Skills best","Mastery stars","Report date",...TOPICS.map(t=>t[0]+" % known"),...TOPICS.map(t=>t[0]+" stars")];
+  const lines=[head,...rows.map(r=>[r.name,r.year,lvlFor(r.xp),r.xp,r.known,r.acc,r.streak,r.best,r.active,r.essays,r.bosses,r.exam,r.stars,dayToDate(r.day).toLocaleDateString("en-GB"),...TOPICS.map((_,i)=>r.topics[i]?r.topics[i][0]:""),...TOPICS.map((_,i)=>r.topics[i]&&r.topics[i][3]!=null?r.topics[i][3]:"")])];
   const csv=lines.map(l=>l.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
   const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="class-progress.csv"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500);
 };
