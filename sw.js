@@ -1,6 +1,6 @@
 /* Offline support for the Fount of Knowledge and Wisdom (A-level Sociology).
    Bump VERSION whenever index.html changes so students get the update. */
-const VERSION = "fount-soc-alevel-v5";
+const VERSION = "fount-soc-alevel-v6";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
