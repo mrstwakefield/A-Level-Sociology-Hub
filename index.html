@@ -42,6 +42,10 @@ button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid #4D7CFE;outline-offset:2px;border-radius:6px}
 .wrap{max-width:980px;margin:0 auto;padding:28px 20px 60px}
+.hublink{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:max(12px,env(safe-area-inset-right,0px));z-index:50;display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:999px;background:var(--card);color:var(--ink);border:1px solid var(--line);font:700 14px/1.2 var(--body);text-decoration:none;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.hublink:hover{border-color:var(--ink)}
+.hublink:focus-visible{outline:3px solid #4D7CFE;outline-offset:2px}
+@media (max-width:560px){.hublink{font-size:13px;padding:4px 10px;top:calc(env(safe-area-inset-top,0px) + 6px)}}
 
 /* header */
 .top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
@@ -173,7 +177,7 @@ mark{background:#FFE17A;color:#18203A;border-radius:3px;padding:0 1px}
 .foot{margin-top:40px;font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
 
 @media (max-width:560px){
-  .wrap{padding:18px 14px 40px}
+  .wrap{padding:44px 14px 40px}
   .face{padding:24px 20px 24px 34px}
   .face::before{width:10px}
   .card{min-height:300px}
@@ -1208,6 +1212,7 @@ mark{background:#FFE17A;color:#18203A;border-radius:3px;padding:0 1px}
 </style>
 </head>
 <body>
+<a class="hublink" href="https://arodker.github.io/history-revision/" aria-label="Back to the revision hub">← Revision hub</a>
 <div class="wrap">
   <header class="top">
     <button class="pressbtn" id="pressBtn" type="button">🔔 Ring the bell</button>
