@@ -1340,6 +1340,7 @@ const DEMO_HASH="uxyw18";
 const demoHash=x=>{ let a=5381; for(const c of String(x).trim().toLowerCase()) a=((a*33)^c.charCodeAt(0))>>>0; return a.toString(36); };
 const DEMO=(()=>{ if(!/[?&]demo\b/i.test(location.search)) return false;
   try{ if(sessionStorage.getItem("fountDemoOk")==="1") return true; }catch(e){}
+  try{ if(String(window.name).indexOf("fountDemoOk")>=0) return true; }catch(e){}
   DEMO_ASK=true; return false; })();
 const KEY = DEMO ? "rr-soc-demo" : "rr-soc-v1";
 if(DEMO) try{ localStorage.removeItem(KEY); }catch(e){}
@@ -4790,7 +4791,7 @@ if(DEMO_ASK){
   document.body.appendChild(o);
   const leave=()=>{ o.remove(); try{ history.replaceState(null,"",location.pathname+location.hash); }catch(e){} };
   o.querySelector("form").onsubmit=e=>{ e.preventDefault(); const v=$("#dpIn").value;
-    if(demoHash(v)===DEMO_HASH){ try{ sessionStorage.setItem("fountDemoOk","1"); }catch(e){} location.reload(); }
+    if(demoHash(v)===DEMO_HASH){ try{ sessionStorage.setItem("fountDemoOk","1"); }catch(e){} try{ window.name="fountDemoOk"; }catch(e){} location.reload(); }
     else { $("#dpErr").textContent="That passcode isn't right."; $("#dpIn").select(); } };
   $("#dpNo").onclick=leave;
   o.addEventListener("keydown",e=>{ e.stopPropagation(); if(e.key==="Escape") leave(); });
